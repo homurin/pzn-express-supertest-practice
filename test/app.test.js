@@ -39,3 +39,25 @@ test("Test Header", async () => {
     .set("Accept", "text/plain");
   expect(response.text).toBe("type: text/plain");
 });
+
+test("Test Response Status", async () => {
+  let response = await request(app).get("/account").query({ name: "batman" });
+  expect(response.status).toBe(200);
+  expect(response.text).toBe("Hello batman");
+
+  response = await request(app).get("/account");
+  expect(response.status).toBe(400);
+});
+
+test("Test Response Header", async () => {
+  const response = await request(app).get("/resheader");
+  expect(response.text).toBe("Hello Response");
+  expect(response.get("X-Powered-By")).toBe("homurin");
+  expect(response.get("X-Author")).toBe("fajrin");
+});
+
+test("Test Response Body", async () => {
+  const response = await request(app).get("/resbody");
+  expect(response.get("Content-Type")).toContain("text/html");
+  expect(response.text).toBe(`<html><body><p>Hello World</p></body></html>`);
+});
